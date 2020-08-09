@@ -199,7 +199,6 @@ Measure::Measure(Score* s)
       {
       setTicks(Fraction(4,4));
       _repeatCount           = 2;
-
       int n = score()->nstaves();
       _mstaves.reserve(n);
       for (int staffIdx = 0; staffIdx < n; ++staffIdx) {
@@ -208,7 +207,7 @@ Measure::Measure(Score* s)
             ms->setLines(new StaffLines(score()));
             ms->lines()->setTrack(staffIdx * VOICES);
             ms->lines()->setParent(this);
-            ms->lines()->setVisible(!staff->invisible());
+            ms->lines()->setVisible(!staff->invisible(tick()));
             _mstaves.push_back(ms);
             }
       setIrregular(false);
@@ -266,7 +265,7 @@ void Measure::createStaves(int staffIdx)
             s->setLines(new StaffLines(score()));
             s->lines()->setParent(this);
             s->lines()->setTrack(n * VOICES);
-            s->lines()->setVisible(!staff->invisible());
+            s->lines()->setVisible(!staff->invisible(tick()));
             _mstaves.push_back(s);
             }
       }
@@ -1144,7 +1143,7 @@ void Measure::cmdAddStaves(int sStaff, int eStaff, bool createRest)
             ms->setLines(new StaffLines(score()));
             ms->lines()->setTrack(i * VOICES);
             ms->lines()->setParent(this);
-            ms->lines()->setVisible(!staff->invisible());
+            ms->lines()->setVisible(!staff->invisible(tick()));
             score()->undo(new InsertMStaff(this, ms, i));
             }
 
@@ -1260,7 +1259,7 @@ void Measure::insertStaff(Staff* staff, int staffIdx)
       ms->setLines(new StaffLines(score()));
       ms->lines()->setParent(this);
       ms->lines()->setTrack(staffIdx * VOICES);
-      ms->lines()->setVisible(!staff->invisible());
+      ms->lines()->setVisible(!staff->invisible(tick()));
       insertMStaff(ms, staffIdx);
       }
 
@@ -1922,7 +1921,7 @@ void Measure::read(XmlReader& e, int staffIdx)
             s->setLines(new StaffLines(score()));
             s->lines()->setParent(this);
             s->lines()->setTrack(n * VOICES);
-            s->lines()->setVisible(!staff->invisible());
+            s->lines()->setVisible(!staff->invisible(tick()));
             _mstaves.push_back(s);
             }
 
@@ -2018,7 +2017,7 @@ void Measure::read(XmlReader& e, int staffIdx)
                   _mstaves[staffIdx]->vspacerUp()->setGap(e.readDouble() * _spatium);
                   }
             else if (tag == "visible")
-                  _mstaves[staffIdx]->setVisible(e.readInt());
+                  _mstaves[staffIdx]->setVisible(e.readInt()); // AQUI
             else if ((tag == "slashStyle") || (tag == "stemless"))
                   _mstaves[staffIdx]->setStemless(e.readInt());
             else if (tag == "SystemDivider") {

@@ -258,6 +258,7 @@ static constexpr PropertyMetaData propertyList[] = {
       { Pid::STAFF_SHOW_BARLINES,     false, "",                      P_TYPE::BOOL,                DUMMY_QT_TRANSLATE_NOOP("propertyName", "showing barlines") },
       { Pid::STAFF_SHOW_LEDGERLINES,  false, "",                      P_TYPE::BOOL,                DUMMY_QT_TRANSLATE_NOOP("propertyName", "showing ledgerlines") },
       { Pid::STAFF_STEMLESS,          false, "",                      P_TYPE::BOOL,                DUMMY_QT_TRANSLATE_NOOP("propertyName", "stemless")         },
+      { Pid::STAFF_INVISIBLE,         false, "",                      P_TYPE::BOOL,                DUMMY_QT_TRANSLATE_NOOP("propertyName", "invisible")         },
 
       { Pid::HEAD_SCHEME,             false, "headScheme",            P_TYPE::HEAD_SCHEME,         DUMMY_QT_TRANSLATE_NOOP("propertyName", "notehead scheme")  },
       { Pid::STAFF_GEN_CLEF,          false, "",                      P_TYPE::BOOL,                DUMMY_QT_TRANSLATE_NOOP("propertyName", "generating clefs") },

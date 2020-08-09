@@ -55,7 +55,7 @@ StaffType::StaffType()
       }
 
 StaffType::StaffType(StaffGroup sg, const QString& xml, const QString& name, int lines, int stpOff, qreal lineDist,
-   bool genClef, bool showBarLines, bool stemless, bool genTimeSig, bool genKeySig, bool showLedgerLines) :
+   bool genClef, bool showBarLines, bool stemless, bool genTimeSig, bool genKeySig, bool showLedgerLines, bool invisible, const QColor& color) :
    _group(sg), _xmlName(xml), _name(name),
    _lines(lines),
    _stepOffset(stpOff),
@@ -65,7 +65,9 @@ StaffType::StaffType(StaffGroup sg, const QString& xml, const QString& name, int
    _stemless(stemless),
    _genClef(genClef),
    _genTimesig(genTimeSig),
-   _genKeysig(genKeySig)
+   _genKeysig(genKeySig),
+   _invisible(invisible),
+   _color(color)
       {
       }
 
@@ -208,6 +210,8 @@ void StaffType::write(XmlWriter& xml) const
             xml.tag("mag", _userMag);
       if (_small)
             xml.tag("small", _small);
+      /*if (_invisible)
+            xml.tag("invisible", _invisible);*/
       if (_stepOffset)
             xml.tag("stepOffset", _stepOffset);
       if (!_genClef)
@@ -228,6 +232,10 @@ void StaffType::write(XmlWriter& xml) const
                   xml.tag("keysig", _genKeysig);
             if (!_showLedgerLines)
                   xml.tag("ledgerlines", _showLedgerLines);
+            if (_invisible)
+                  xml.tag("invisible", _invisible);
+            if (_color != QColor(Qt::black))
+                  xml.tag("color", _color);
             }
       else {
             xml.tag("durations",        _genDurations);
@@ -310,6 +318,10 @@ void StaffType::read(XmlReader& e)
                   _genKeysig = e.readInt();
             else if (tag == "ledgerlines")
                   _showLedgerLines = e.readInt();
+            else if (tag == "invisible")
+                  _invisible = e.readInt();
+            else if (tag == "color")
+                  _color = e.readColor();
             else if (tag == "durations")
                   setGenDurations(e.readBool());
             else if (tag == "durationFontName")
@@ -1336,12 +1348,12 @@ void StaffType::initStaffTypes()
 
       // keep in sync with enum class StaffTypes
       _presets = {
-//                       group,              xml-name,  human-readable-name,          lin stpOff  dist clef   bars stmless time  key    ledger
-         StaffType(StaffGroup::STANDARD,   "stdNormal", QObject::tr("Standard"),        5, 0,     1,   true,  true, false, true, true,  true),
-//       StaffType(StaffGroup::PERCUSSION, "perc1Line", QObject::tr("Perc. 1 line"),    1, -4,    1,   true,  true, false, true, false, true),
-         StaffType(StaffGroup::PERCUSSION, "perc1Line", QObject::tr("Perc. 1 line"),    1, 0,     1,   true,  true, false, true, false, true),
-         StaffType(StaffGroup::PERCUSSION, "perc3Line", QObject::tr("Perc. 3 lines"),   3, 0,     2,   true,  true, false, true, false, true),
-         StaffType(StaffGroup::PERCUSSION, "perc5Line", QObject::tr("Perc. 5 lines"),   5, 0,     1,   true,  true, false, true, false, true),
+//                       group,              xml-name,  human-readable-name,          lin stpOff  dist clef   bars stmless time  key    ledger invisible color
+         StaffType(StaffGroup::STANDARD,   "stdNormal", QObject::tr("Standard"),        5, 0,     1,   true,  true, false, true, true,  true,  false,    Qt::black),
+//       StaffType(StaffGroup::PERCUSSION, "perc1Line", QObject::tr("Perc. 1 line"),    1, -4,    1,   true,  true, false, true, false, true,  false,    Qt::black),
+         StaffType(StaffGroup::PERCUSSION, "perc1Line", QObject::tr("Perc. 1 line"),    1, 0,     1,   true,  true, false, true, false, true,  false,    Qt::black),
+         StaffType(StaffGroup::PERCUSSION, "perc3Line", QObject::tr("Perc. 3 lines"),   3, 0,     2,   true,  true, false, true, false, true,  false,    Qt::black),
+         StaffType(StaffGroup::PERCUSSION, "perc5Line", QObject::tr("Perc. 5 lines"),   5, 0,     1,   true,  true, false, true, false, true,  false,    Qt::black),
 //                 group            xml-name,     human-readable-name                  lin stpOff dist clef   bars stemless time      duration font     size off genDur     fret font          size off  duration symbol repeat      thru       minim style              onLin  rests  stmDn  stmThr upsDn  sTFing nums  bkTied
 //       StaffType(StaffGroup::TAB, "tab6StrSimple", QObject::tr("Tab. 6-str. simple"), 6, 2,     1.5, true,  true, true,  false, "MuseScore Tab Modern", 15, 0, false, "MuseScore Tab Sans",    9, 0, TablatureSymbolRepeat::NEVER, false, TablatureMinimStyle::NONE,   true,  false, true,  false, false, false, true, false),
 //       StaffType(StaffGroup::TAB, "tab6StrCommon", QObject::tr("Tab. 6-str. common"), 6, 2,     1.5, true,  true, false, false, "MuseScore Tab Modern", 15, 0, false, "MuseScore Tab Serif",   9, 0, TablatureSymbolRepeat::NEVER, false, TablatureMinimStyle::SHORTER,true,  false, true,  false, false, false, true, true),
